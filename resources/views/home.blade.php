@@ -3,21 +3,62 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">{{ __('Dashboard') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
             </div>
         </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                </div>
+            </div>
+        </div>        
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">{{ __('Loans') }}</div>
+
+                <div class="card-body">
+                    <table class="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">Id</th>
+                          <th scope="col">User</th>
+                          <th scope="col">amount</th>
+                          <th scope="col">term</th>
+                          <th scope="col">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @if(!empty($loans))
+                            @foreach ($loans as $key => $loan) 
+                                <tr>
+                                  <th scope="row">{{$key+1}}</th>
+                                  <td>{{$loan->user['name']}}</td>
+                                  <td>{{$loan->amount}}</td>
+                                  <td>{{$loan->term}}</td>
+                                  <td role="cell">
+                                        @if($loan->is_approved == '1')
+                                            <button type="button" class="btn btn-success">Approved</button>
+                                        @elseif($loan->is_approved == '0')
+                                            <button type="button" class="btn btn-danger">Rejected</button>
+                                        @else
+                                        <button type="button" class="btn btn-success">Approve</button>
+                                        <button type="button" class="btn btn-danger">Reject</button>
+                                        @endif
+                                   </td>
+                                </tr>
+                            @endforeach
+                        @else       
+                            <tr>
+                              <td colspan='6'>No Loans found.</td>
+                            </tr>
+                        @endif 
+                      </tbody>
+                    </table>     
+                </div>
+            </div>
+        </div>        
     </div>
 </div>
 @endsection
