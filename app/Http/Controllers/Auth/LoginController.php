@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -37,4 +40,47 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    ///LOGIN by api/////
+    public function apiLogin(Request $request)
+    {
+        $data = [
+            'password' => $request->password,
+            'email' => $request->email,
+            'client_id' => $request->cid,
+            'client_secret' => $request->cp,
+            // 'scope' => $request->scope,
+        ];
+
+        //validation part 
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password]) == false) {
+                return response()->json([
+                    'error' => 'The email or Password is incorrect.'
+                ]);            
+        }
+
+        $client = new Client();
+
+        try {
+                $res = $client->request('POST', env('OAUTH_TOKEN_URL'), [
+                'form_params' => [
+                    'grant_type' => 'password',
+                    'client_id' => $request->cid,
+                    'client_secret' => $request->cp,
+                    'username' => $request->email,
+                    'password' => $request->password,
+                    // 'scope' => $request->scope,
+                ]
+
+                // dd($res);
+            ]);
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+            return response()->json([
+                'error' => 'OAUTH_TOKEN Issue',
+            ]);            
+        }
+
+        return json_decode((string) $res->getBody(), true); ///SUCCESS
+    }    
 }
