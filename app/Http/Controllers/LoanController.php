@@ -10,11 +10,18 @@ use App\LoanRepayment;
 class LoanController extends Controller
 {
     
+    protected $loan;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
+    public function __construct(Loan $loan)
+    {
+        $this->loan = $loan;
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -42,11 +49,11 @@ class LoanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateLoan $request, Loan $loan)
+    public function store(CreateLoan $request)
     { 
         try {
-                //create loan request
-               $loan->fill([
+               //create loan request
+               $this->loan->fill([
                 "user_id" => \Auth::user()->id,
                 "amount" => $request->amount,
                 "term"  => $request->loan_term,
@@ -63,6 +70,7 @@ class LoanController extends Controller
 
         return response()->json([
                     'success' => true,
+                    'loan-number' => $this->loan->id,
                     'message' => 'Loan request created successfully'
                 ]);
     }
@@ -110,5 +118,18 @@ class LoanController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    //update the laon status Approve|reject
+    public function loanStatus($status, $id){
+
+        $loan = $this->loan->findOrFail($id);
+        
+        $loan->is_approved = $status;
+
+        $loan->save();
+
+        return redirect('/home');
     }
 }

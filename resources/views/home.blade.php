@@ -45,8 +45,16 @@
                                         @elseif($loan->is_approved == '0')
                                             <button type="button" class="btn btn-danger">Rejected</button>
                                         @else
-                                        <button type="button" class="btn btn-success">Approve</button>
-                                        <button type="button" class="btn btn-danger">Reject</button>
+                                        <a href="{{ route('loan-status', ['status'=>1, 'id'=>$loan->id]) }}">
+                                            <button type="button" class="btn btn-success">
+                                                Approve
+                                            </button>
+                                        </a>
+                                        <a href="{{ route('loan-status', ['status'=> 0, 'id'=>$loan->id]) }}">
+                                            <button type="button" class="btn btn-danger">
+                                                Reject
+                                            </button>
+                                        </a>
                                         @endif
                                    </td>
                                 </tr>
