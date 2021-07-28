@@ -8,6 +8,6 @@ class LoanRepayment extends Model
 {
     protected $fillable = [
         "loan_id"
-        , "amount"
+        ,"amount"
     ];
 }

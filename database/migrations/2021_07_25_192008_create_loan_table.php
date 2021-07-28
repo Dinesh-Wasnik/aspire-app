@@ -14,13 +14,13 @@ class CreateLoanTable extends Migration
     public function up()
     {
         Schema::create('loans', function (Blueprint $table) {
-             $table->increments('id');
-             $table->integer('user_id')->unsigned();
-             $table->integer('amount')->unsigned();
-             $table->enum('term', array('3','6','9', '12'))->default('3');
-             $table->integer('installment')->unsigned()->default('3');
-             $table->boolean('is_approved')->nullable();
-             $table->timestamps();
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('amount')->unsigned();
+            $table->enum('term', array('3','6','9', '12'))->default('3');
+            $table->float('installment', 8, 2)->unsigned()->default('0');
+            $table->boolean('is_approved')->nullable();
+            $table->timestamps();
         });
     }
 

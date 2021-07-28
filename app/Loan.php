@@ -10,6 +10,7 @@ class Loan extends Model
         "user_id"
         , "amount"
         , "term"
+        , "installment"
         , "is_approved"
     ];
 

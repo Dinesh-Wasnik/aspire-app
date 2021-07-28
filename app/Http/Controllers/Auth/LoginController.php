@@ -71,11 +71,8 @@ class LoginController extends Controller
                     'password' => $request->password,
                     // 'scope' => $request->scope,
                 ]
-
-                // dd($res);
             ]);
         } catch (\Exception $ex) {
-            return $ex->getMessage();
             return response()->json([
                 'error' => 'OAUTH_TOKEN Issue',
             ]);            

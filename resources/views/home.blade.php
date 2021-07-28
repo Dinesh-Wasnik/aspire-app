@@ -26,6 +26,7 @@
                           <th scope="col">User</th>
                           <th scope="col">amount</th>
                           <th scope="col">term</th>
+                          <th scope="col">Installment</th>
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
@@ -37,6 +38,7 @@
                                   <td>{{$loan->user['name']}}</td>
                                   <td>{{$loan->amount}}</td>
                                   <td>{{$loan->term}}</td>
+                                  <td>{{$loan->installment}}</td>
                                   <td role="cell">
                                         @if($loan->is_approved == '1')
                                             <button type="button" class="btn btn-success">Approved</button>

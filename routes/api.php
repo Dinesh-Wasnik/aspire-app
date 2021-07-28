@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('auth/login', 'Auth\LoginController@apiLogin');
 
-Route::middleware('auth:api')->get('/users', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::post('/apply-loan',      'LoanController@store');
+    Route::post('/repayment-loan',  'LoanController@repayment');
 });
