@@ -16,7 +16,7 @@ class CreateLoanRepaymentTable extends Migration
         Schema::create('loan_repayments', function (Blueprint $table) {
              $table->increments('id');
              $table->integer('loan_id')->unsigned();
-             $table->integer('amount')->unsigned();
+             $table->float('amount', 8, 2)->unsigned();
              $table->timestamps();
              
         });

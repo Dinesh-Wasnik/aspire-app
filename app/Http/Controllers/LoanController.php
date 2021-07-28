@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Loan;
 use App\Http\Requests\CreateLoan;
+use App\Http\Requests\CreateLoanRepayment;
 use App\LoanRepayment;
 
 class LoanController extends Controller
@@ -56,6 +57,7 @@ class LoanController extends Controller
                $this->loan->fill([
                 "user_id" => \Auth::user()->id,
                 "amount" => $request->amount,
+                "remaining_amount" => $request->amount,
                 "term"  => $request->loan_term,
                 "installment"=> ($request->amount/$request->loan_term) 
                ])->save();
@@ -71,6 +73,7 @@ class LoanController extends Controller
         return response()->json([
                     'success' => true,
                     'loan-number' => $this->loan->id,
+                    'installment' => $this->loan->installment,
                     'message' => 'Loan request created successfully'
                 ]);
     }
@@ -132,4 +135,80 @@ class LoanController extends Controller
 
         return redirect('/home');
     }
+
+
+    //create repayment transaction
+    public function repayment(CreateLoanRepayment $request, LoanRepayment $repayment)
+    {
+
+        $loan = $this->loan->find($request->loan_number);
+        
+        //if not found , throw error
+        if(empty($loan)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Loan number not found',
+            ]);
+        }
+
+        //check if loan approve or not
+        if(!empty($loan) &&  $loan->is_approved == 0){
+            return response()->json([
+                'success' => false,
+                'message' => 'Loan is not approved',
+            ]); 
+        }
+
+        //check if all loan payment is done or not
+        if(!empty($loan) &&  $loan->remaining_amount == 0){
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan was cleared',
+            ]); 
+        }
+
+        //if installment amount not match , then throw error
+        if($loan->installment != $request->amount){
+            return response()->json([
+                'success' => false,
+                'message' => "Installment amount is not match, installment amount is ".$loan->installment,
+            ]);
+
+        }
+
+        //repayment transction
+        try {
+               //create loan request
+               $repayment->fill([
+                "amount" => $request->amount,
+                "loan_id"  => $request->loan_number,
+               ])->save();
+
+               //update the remaining amount
+                if($loan->remaining_amount > 0) {
+                    $loan->remaining_amount = $loan->remaining_amount - $request->amount;
+                }
+
+                if((float)$loan->remaining_amount < 0 )
+                { 
+                    $loan->remaining_amount = 0;
+                }
+
+               $loan->save();
+
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+            return response()->json([
+                'success' => false,
+                'message' => 'Loan request was unsuccessfully',
+            ]);            
+        }        
+
+        return response()->json([
+                    'success' => true,
+                    'remaining-loan' => number_format($loan->remaining_amount, 2),
+                    'message' => 'Loan repayment was successfully'
+                ]);
+
+    }//end repayment
 }

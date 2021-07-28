@@ -17,6 +17,7 @@ class CreateLoanTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('amount')->unsigned();
+            $table->float('remaining_amount', 8, 2)->unsigned()->default('0');
             $table->enum('term', array('3','6','9', '12'))->default('3');
             $table->float('installment', 8, 2)->unsigned()->default('0');
             $table->boolean('is_approved')->nullable();

@@ -5,8 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
 
-class CreateLoan extends FormRequest
-{
+class CreateLoanRepayment extends FormRequest
+{   
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -31,7 +32,7 @@ class CreateLoan extends FormRequest
     {
         return [
             'amount'=>'required|regex:/^\d+(\.\d{1,2})?$/',
-            'loan_term'=>'required|numeric'
+            'loan_number'=>'required|numeric'
         ];
     }
 }

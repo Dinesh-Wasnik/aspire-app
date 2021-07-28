@@ -12,6 +12,7 @@ class Loan extends Model
         , "term"
         , "installment"
         , "is_approved"
+        , "remaining_amount"
     ];
 
 
