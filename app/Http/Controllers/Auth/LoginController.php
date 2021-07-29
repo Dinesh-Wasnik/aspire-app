@@ -44,14 +44,6 @@ class LoginController extends Controller
     ///LOGIN by api/////
     public function apiLogin(Request $request)
     {
-        $data = [
-            'password' => $request->password,
-            'email' => $request->email,
-            'client_id' => $request->cid,
-            'client_secret' => $request->cp,
-            // 'scope' => $request->scope,
-        ];
-
         //validation part 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password]) == false) {
                 return response()->json([
@@ -59,7 +51,7 @@ class LoginController extends Controller
                 ]);            
         }
 
-        $client = new Client();
+        $client = new Client(); 
 
         try {
                 $res = $client->request('POST', env('OAUTH_TOKEN_URL'), [
@@ -69,12 +61,12 @@ class LoginController extends Controller
                     'client_secret' => $request->cp,
                     'username' => $request->email,
                     'password' => $request->password,
-                    // 'scope' => $request->scope,
+                    'scope'   => "*"
                 ]
             ]);
         } catch (\Exception $ex) {
             return response()->json([
-                'error' => 'OAUTH_TOKEN Issue',
+                'error' => 'OAUTH_TOKEN issue',
             ]);            
         }
 
