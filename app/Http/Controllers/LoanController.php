@@ -73,7 +73,7 @@ class LoanController extends Controller
         return response()->json([
                     'success' => true,
                     'loan-number' => $this->loan->id,
-                    'installment' => $this->loan->installment,
+                    'installment' => number_format($this->loan->installment, 2),
                     'message' => 'Loan request created successfully'
                 ]);
     }
@@ -137,44 +137,58 @@ class LoanController extends Controller
     }
 
 
+    //repayment validation
+    public function repaymentValidation($loan, $request){
+
+        //if not found , throw error
+        if(empty($loan)){
+            return [
+                'success' => false,
+                'message' => 'Loan number not found',
+            ];
+        }
+
+        //check if loan approve or not
+        if(!empty($loan) &&  $loan->is_approved == 0){
+            return [
+                'success' => false,
+                'message' => 'Loan is not approved',
+            ]; 
+        }
+
+        //if installment amount not match , then throw error
+        if($loan->installment != $request->amount){
+            return [
+                'success' => false,
+                'message' => "Installment amount is not match, installment amount is ".$loan->installment,
+            ];
+        }
+
+        //check if all loan payment is done or not
+        if(!empty($loan) &&  $loan->remaining_amount == 0){
+            return [
+                'success' => false,
+                'message' => 'Loan was already cleared',
+            ]; 
+        }
+
+        return $response['success'] = true; 
+    }
+
+
+
     //create repayment transaction
     public function repayment(CreateLoanRepayment $request, LoanRepayment $repayment)
     {
 
         $loan = $this->loan->find($request->loan_number);
-        
-        //if not found , throw error
-        if(empty($loan)){
-            return response()->json([
-                'success' => false,
-                'message' => 'Loan number not found',
-            ]);
-        }
+         
+        $response = $this->repaymentValidation($loan, $request);
 
-        //check if loan approve or not
-        if(!empty($loan) &&  $loan->is_approved == 0){
-            return response()->json([
-                'success' => false,
-                'message' => 'Loan is not approved',
-            ]); 
-        }
-
-        //check if all loan payment is done or not
-        if(!empty($loan) &&  $loan->remaining_amount == 0){
-            return response()->json([
-                'success' => true,
-                'message' => 'Loan was cleared',
-            ]); 
-        }
-
-        //if installment amount not match , then throw error
-        if($loan->installment != $request->amount){
-            return response()->json([
-                'success' => false,
-                'message' => "Installment amount is not match, installment amount is ".$loan->installment,
-            ]);
-
-        }
+        //if validation fail return error
+        if($response['success'] === false) {
+            return response()->json($response);
+        }   
 
         //repayment transction
         try {
@@ -197,7 +211,6 @@ class LoanController extends Controller
                $loan->save();
 
         } catch (\Exception $ex) {
-            return $ex->getMessage();
             return response()->json([
                 'success' => false,
                 'message' => 'Loan request was unsuccessfully',
