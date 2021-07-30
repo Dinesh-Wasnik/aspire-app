@@ -8,9 +8,11 @@ use Tests\TestCase;
 use App\User;
 use DB;
 use Laravel\Passport\Passport;
+
 class CreateLoanTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, RefreshDatabase;
+
     private $applyLoan = '/api/apply-loan';
     private $login     = '/api/auth/login';
 
@@ -20,6 +22,7 @@ class CreateLoanTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->clientSecret = DB::table("oauth_clients")->where("id", 2)->first()->secret;
     }
 
@@ -40,6 +43,7 @@ class CreateLoanTest extends TestCase
     {
         $response = $this->post($this->login);
         $response->assertStatus(200);
+        
         $this->assertEquals($response->decodeResponseJson()['error'], "The email or Password is incorrect.");
     }
 
@@ -60,29 +64,24 @@ class CreateLoanTest extends TestCase
         $this->assertEquals($response->decodeResponseJson()['error'], "OAUTH_TOKEN issue");
     }
 
-
     /**
-     * Test login with all parameter
-     *
-     * @return void
+     * passport test
      */
-    public function testLogin()
-    {
+    public function testOauthLogin() {
+
         $user = $this->createUser();
 
-        $response = $this->actingAs($user)->json('post', $this->login, [
-          'email' => $user->email,
-          'password' => 88888888,
-            'cp' => $this->clientSecret,
-            'cid' => $this->clientID
-        ]);
+        $body = [
+            'username' => $user->email,
+            'password' => '88888888',
+            'client_id' => $this->clientID,
+            'client_secret' => $this->clientSecret,
+            'grant_type' => 'password',
+        ];
 
-        $response->assertStatus(200)->assertJsonStructure([
-            'token_type',
-            'expires_in',
-            'access_token',
-            'refresh_token'
-        ]);               
+        $this->json('POST','/oauth/token', $body)
+                    ->assertStatus(200)
+                    ->assertJsonStructure(['token_type','expires_in','access_token','refresh_token']);
     }
 
 
@@ -93,25 +92,21 @@ class CreateLoanTest extends TestCase
      */
     public function testUserLoan()
     {  
-        // $user = $this->createUser();
+        $user = $this->createUser();
 
-        // $cp = DB::table("oauth_clients")->where("id", 2)->first()->secret;
+        Passport::actingAs($user);
 
-        // $response = $this->json('post', $this->login, [
-        //     'cp' => $cp,
-        //     'cid' => 2,
-        //     'email' => $user->email,
-        //     'password' => '88888888',
-        // ]);
+        $response =  $this->json('post', $this->applyLoan, [
+            'amount'   => '1000',
+            'loan_term'  => '3'
+        ]);
 
-        // $response->assertStatus(422)->assertJson([
-        //     'error' => [
-        //         'message' => 'Amount not valid'
-        //     ]
-        // ]);
-
-        // $response = $this->post($this->applyLoan);
-
-        // $response->assertStatus(201);
+        $response->assertStatus(200)
+                ->assertJsonStructure([
+                    "success",
+                    "loan-number",
+                    "installment",
+                    "message"
+                ]);    
     }
 }
