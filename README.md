@@ -24,3 +24,10 @@ $ php artisan passport:install
 $ php artisan test
 
 ```
+
+## Environment setting
+``` bash
+OAUTH_TOKEN_URL
+APP_URL
+```
+replace the value of this variable with your project url 
