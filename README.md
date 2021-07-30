@@ -1,8 +1,8 @@
 I pushed  .env and .env.testing files.
 
-Create 2 databse
-1.aspire_app
-1.aspire_app_test
+Create 2 databse.
+1) aspire_app
+2) aspire_app_test
 
 ## Setup
 
