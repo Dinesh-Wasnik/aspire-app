@@ -38,4 +38,4 @@ $ php artisan test
 OAUTH_TOKEN_URL
 APP_URL
 ```
-replace the value of this variable with your project url 
+replace the value of this variable with your project url in both environment file(.env and .env.testing)
