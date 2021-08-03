@@ -80,7 +80,7 @@
             @endif
 
             <div class="content">
-                    <h1>Welcome, to aspire app</h1>
+                    <h1>Welcome, to e-lending app </h1>
             </div>
         </div>
     </body>
