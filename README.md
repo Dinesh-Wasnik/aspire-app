@@ -8,6 +8,9 @@ Admin can reject or approve the loan application.
 
 Refer app-data folder for app screens.
 
+## APi Document link
+https://documenter.getpostman.com/view/10476122/TzseJ6Y3
+
 
 I pushed  .env and .env.testing files.
 
@@ -30,6 +33,9 @@ $ php artisan db:seed
 
 # install passort
 $ php artisan passport:install
+
+# To regenerate the key 
+$ php artisan passport:keys
 
 # test application
 $ php artisan test
