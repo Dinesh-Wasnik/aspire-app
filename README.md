@@ -4,6 +4,8 @@ It is an app that allows authenticated users to go through a loan application.
 User can apply to loan.
 After the loan is approved, the user is able to submit the weekly loan repayments.
 
+Admin can reject or approve the loan application.
+
 
 
 I pushed  .env and .env.testing files.
