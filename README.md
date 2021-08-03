@@ -1,8 +1,16 @@
+### Mini loan app
+
+It is an app that allows authenticated users to go through a loan application.
+User can apply to loan.
+After the loan is approved, the user is able to submit the weekly loan repayments.
+
+
+
 I pushed  .env and .env.testing files.
 
-Create 2 databse
-1.aspire_app
-1.aspire_app_test
+Create 2 databse.
+1) aspire_app
+2) aspire_app_test
 
 ## Setup
 
@@ -24,3 +32,10 @@ $ php artisan passport:install
 $ php artisan test
 
 ```
+
+## Environment setting
+``` bash
+OAUTH_TOKEN_URL
+APP_URL
+```
+replace the value of this variable with your project url in both environment file(.env and .env.testing)
