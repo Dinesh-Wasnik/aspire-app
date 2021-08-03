@@ -6,6 +6,7 @@ After the loan is approved, the user is able to submit the weekly loan repayment
 
 Admin can reject or approve the loan application.
 
+Refer app-data folder for app screens.
 
 
 I pushed  .env and .env.testing files.
