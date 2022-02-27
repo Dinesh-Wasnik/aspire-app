@@ -14,7 +14,7 @@ https://documenter.getpostman.com/view/10476122/TzseJ6Y3
 
 I pushed  .env and .env.testing files.
 
-Create 2 databse.
+Create 2 database.
 1) aspire_app
 2) aspire_app_test
 
